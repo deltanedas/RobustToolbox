@@ -91,7 +91,8 @@ public partial class EntityManager
         component.LifeStage = ComponentLifeStage.Deleted;
     }
 
-    internal virtual void SetLifeStage(MetaDataComponent meta, EntityLifeStage stage)
+    /// <inheritdoc/>
+    public virtual void SetLifeStage(MetaDataComponent meta, EntityLifeStage stage)
     {
         meta.EntityLifeStage = stage;
     }

@@ -61,7 +61,7 @@ namespace Robust.Server.GameObjects
             _pvs = System<PvsSystem>();
         }
 
-        internal override EntityUid CreateEntity(string? prototypeName, out MetaDataComponent metadata, IEntityLoadContext? context = null)
+        public override EntityUid CreateEntity(string? prototypeName, out MetaDataComponent metadata, IEntityLoadContext? context = null)
         {
             if (prototypeName == null)
                 return base.CreateEntity(prototypeName, out metadata, context);
