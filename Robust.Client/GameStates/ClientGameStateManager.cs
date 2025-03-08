@@ -1202,11 +1202,15 @@ namespace Robust.Client.GameStates
                 if (!_entities.TryGetEntity(netEntity, out var id))
                     continue;
 
-                if (!xforms.TryGetComponent(id, out var xform))
+                if (!xforms.TryGetComponent(id, out var xform) || !metas.TryGetComponent(id, out var meta))
                     continue; // Already deleted? or never sent to us?
 
                 // First, a single recursive map change
                 xformSys.DetachEntity(id.Value, xform);
+
+                // Then mark the entity as terminating. This lets handlers for events on children work with e.g. container events.
+                var oldStage = meta.EntityLifeStage;
+                _entities.SetLifeStage(meta, EntityLifeStage.Terminating);
 
                 // Then detach all children.
                 var childEnumerator = xform.ChildEnumerator;
@@ -1215,7 +1219,8 @@ namespace Robust.Client.GameStates
                     xformSys.DetachEntity(child, xforms.Get(child), metas.Get(child), xform);
                 }
 
-                // Finally, delete the entity.
+                // Finally, delete the entity. Unmark it as since DeleteEntity won't work on a Terminating entity.
+                _entities.SetLifeStage(meta, oldStage);
                 _entities.DeleteEntity(id.Value);
             }
             _prof.WriteValue("Count", ProfData.Int32(delSpan.Length));
