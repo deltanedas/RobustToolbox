@@ -299,6 +299,8 @@ namespace Robust.Client.GameStates
         /// <inheritdoc />
         public void ApplyGameState()
         {
+            using var _ = _timing.StartStateApplicationArea();
+
             // If we have been waiting for a full state for a long time, re-request a full state.
             if (_processor.WaitingForFull
                 && _processor.LastFullStateRequested is { } last
